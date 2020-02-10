@@ -6,6 +6,7 @@ const TicketSchema = new mongoose.Schema({
   },
   status: {
     type: String,
+    default: 'opened',
   },
   comments: [],
 });
