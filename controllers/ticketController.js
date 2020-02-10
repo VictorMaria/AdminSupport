@@ -92,7 +92,16 @@ class TicketController {
             }
             res.status(200).json(checkTicket);
         } catch (error) { 
-            res.status(500).json(error);
+            return res.status(500).json(error);
+        }
+    }
+
+    static async readAllTickets (req, res) {
+        try { 
+            const allTickets = await Ticket.find({}, 'id name status comments createdAt');
+            return res.status(200).json(allTickets);
+        } catch (error) {
+            return res.status(500).json(error);
         }
     }
 };
