@@ -16,6 +16,35 @@ class TicketController {
             return res.status(500).json(error);
         }
     }
+
+    static async addComment (req, res) {
+        const { name, message } = req.body;
+        const { id } = req.params;
+        const ticketMessage = {
+            name,
+            message,
+            time: new Date(),
+        }
+        try {
+            const checkTicket = await Ticket.findOne({
+                _id: id,
+            })
+            if (!checkTicket) {
+                return res.status(404).json({ errorMessage: 'Ticket not found' });
+            }
+            const ticket = await Ticket.findOneAndUpdate(
+                { _id: id },
+                { $push: { comments: ticketMessage } },
+                { new: true },
+            )
+            return res.status(200).json({
+                id: ticket.id,
+                comments: ticket.comments,
+            });
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    }
 };
 
 export default TicketController;
