@@ -82,6 +82,19 @@ class TicketController {
             res.status(500).json(error);
         }
     }
+
+    static async readTicket (req, res) {
+        const { id } = req.params;
+        try { 
+            const checkTicket = await Ticket.findOne({ _id: id }, 'id name status comments createdAt');
+            if (!checkTicket) {
+                return res.status(404).json({ errorMessage: 'Ticket not found' });
+            }
+            res.status(200).json(checkTicket);
+        } catch (error) { 
+            res.status(500).json(error);
+        }
+    }
 };
 
 export default TicketController;

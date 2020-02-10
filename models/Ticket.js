@@ -9,6 +9,10 @@ const TicketSchema = new mongoose.Schema({
     default: 'opened',
   },
   comments: [],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Ticket = mongoose.model('Ticket', TicketSchema);
