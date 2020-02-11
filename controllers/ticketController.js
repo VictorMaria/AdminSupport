@@ -2,16 +2,14 @@ import Ticket from '../models/Ticket';
 
 class TicketController {
     static async createTicket (req, res) {
-        const { name } = req.body;
+        const { name, description } = req.body;
         try {
             const ticket = new Ticket({
                 name,
+                description,
             })
             await ticket.save();
-            return res.status(201).json({
-                id: ticket.id,
-                name: ticket.name,
-            });
+            return res.status(201).json(ticket);
         } catch (error) {
             return res.status(500).json(error);
         }
@@ -23,7 +21,6 @@ class TicketController {
         const ticketMessage = {
             name,
             message,
-            time: new Date(),
         }
         try {
             const checkTicket = await Ticket.findOne({
@@ -37,10 +34,7 @@ class TicketController {
                 { $push: { comments: ticketMessage } },
                 { new: true },
             )
-            return res.status(200).json({
-                id: ticket.id,
-                comments: ticket.comments,
-            });
+            return res.status(200).json(ticket);
         } catch (error) {
             res.status(500).json(error)
         }
@@ -86,7 +80,7 @@ class TicketController {
     static async readTicket (req, res) {
         const { id } = req.params;
         try { 
-            const checkTicket = await Ticket.findOne({ _id: id }, 'id name status comments createdAt');
+            const checkTicket = await Ticket.findOne({ _id: id }, 'id name description status comments createdAt updatedAt');
             if (!checkTicket) {
                 return res.status(404).json({ errorMessage: 'Ticket not found' });
             }
@@ -98,7 +92,7 @@ class TicketController {
 
     static async readAllTickets (req, res) {
         try { 
-            const allTickets = await Ticket.find({}, 'id name status comments createdAt');
+            const allTickets = await Ticket.find({}, 'id name description status comments createdAt updatedAt');
             return res.status(200).json(allTickets);
         } catch (error) {
             return res.status(500).json(error);
